@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="OptionSubreport" pageWidth="230" pageHeight="842" columnWidth="230" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="00ba2132-5ab2-4511-9717-de8339d5f78b">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="OPTION_TYPE" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="PATH_IMG" class="java.lang.String"/>
+	<parameter name="REPORT_TYPE" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="value" class="java.lang.String"/>
+	<field name="valueBangla" class="java.lang.String"/>
+	<field name="toValue" class="java.lang.String"/>
+	<field name="fromValue" class="java.lang.String"/>
+	<field name="rangeType" class="java.lang.String"/>
+	<field name="weightValue" class="java.lang.String"/>
+	<field name="weightBahglaValue" class="java.util.List"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="16" y="0" width="214" height="16" uuid="b19c3190-475e-4df6-b854-1e2d62e0253d">
+					<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+				</reportElement>
+				<box padding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SolaimanLipi" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{rangeType}.equals(""))?$F{valueBangla}:$F{fromValue}+"\n"+$F{toValue}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="2" y="5" width="8" height="8" uuid="bfe91efb-e0c9-41a4-b10e-22dd4f994d38"/>
+				<imageExpression><![CDATA[$P{OPTION_TYPE}.equals("checkbox")?$P{PATH_IMG}+"CheckBoxGray.png":$P{OPTION_TYPE}.equals("radio")?$P{PATH_IMG}+"RadioGray.png":$P{PATH_IMG}+"Blank.png"]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="QuestionSubreport" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="867d8c0e-7d23-45b1-bc5a-3360898c1d79">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="PATH_IMG" class="java.lang.String"/>
+	<parameter name="REPORT_TYPE" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="questionNo" class="java.lang.Integer"/>
+	<field name="questionNameEnglish" class="java.lang.String"/>
+	<field name="questionNameBangla" class="java.lang.String"/>
+	<field name="answerTypes" class="java.util.List"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="41" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="41" y="1" width="272" height="16" uuid="19cd7e05-1ff0-4540-9717-19c056124f7e">
+					<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+				</reportElement>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{questionNameEnglish}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="42" y="23" width="271" height="16" uuid="1d554e15-9906-498f-9e6d-78c2f2158f23">
+					<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+				</reportElement>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SolaimanLipi" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{questionNameBangla}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="3" y="1" width="30" height="38" uuid="78fcb45b-d90b-44e7-8ee0-4df81ed471e2"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SolaimanLipi" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{questionNo}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement stretchType="ElementGroupHeight" x="316" y="9" width="230" height="20" uuid="324025a1-9d7c-42a3-88e5-bbd3dc921ddb"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="PATH_IMG">
+					<subreportParameterExpression><![CDATA[$P{PATH_IMG}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_TYPE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_TYPE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
+            ($F{answerTypes})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"AnswerTypeSubreport.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="314" y="0" width="1" height="40" uuid="95f2c4ac-f8a6-4469-8962-43dc4923f19f"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="38" y="0" width="1" height="40" uuid="54360919-df5a-4454-986b-bdee389815b8"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="0" y="40" width="555" height="1" uuid="9ff072d6-d0f1-416a-ac7f-79365026fa29"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="40" uuid="2f05998e-ef9c-41f7-8dda-e7a2553a1b6a"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="555" y="0" width="1" height="40" uuid="aabff968-cb76-4345-8873-82b42f074ff3"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

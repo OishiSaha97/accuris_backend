@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontFamilies>
+	<fontFamily name="Avenir">
+		<normal><![CDATA[fonts/calibri/calibri.ttf]]></normal>
+		<bold><![CDATA[fonts/calibri/calibri-bold.ttf]]></bold>
+		<italic><![CDATA[fonts/calibri/calibri-italic.ttf]]></italic>
+		<bolditalic><![CDATA[fonts/calibri/calibri-bold-Italic.ttf]]></bolditalic>
+		<pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+		<exportFonts/>
+	</fontFamily>
+	<fontFamily name="Helvetica">
+		<normal><![CDATA[fonts/Helvetica/Helvetica 400.ttf]]></normal>
+		<pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+		<pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
+		<exportFonts/>
+	</fontFamily>
+	<fontFamily name="SutonnyOMJ">
+		<normal><![CDATA[fonts/SutonnyOMJ.ttf]]></normal>
+		<pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+		<pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
+		<exportFonts/>
+	</fontFamily>
+	<fontFamily name="SolaimanLipi">
+		<normal><![CDATA[fonts/SolaimanLipiNormal.ttf]]></normal>
+		<pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+		<pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
+		<exportFonts/>
+	</fontFamily>
+</fontFamilies>

@@ -1,0 +1,108 @@
+package com.datasoft.bkash.ea.model.queryModule;
+
+import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
+@Data
+public class ConfigParams {
+    private Integer pid;
+    private String pname;
+    private String description;
+    private String objectId;
+    private String component;
+    private String componentSecondary;
+    private String fieldName;
+    private String excludeParam;
+    private List<SingleFilter> filterParam;
+    private String searchParam;
+    private String orderParam;
+    private String orderType;
+    private Integer paramLimit;
+    private Integer paramOffset;
+    private String paramStatus;
+    private String initiatorType;
+    private String photoId;
+    private String accountNumber;
+    private String dhMasterAcctNumber;
+    private String dhAccountNumber;
+    private String dsoAccountNumber;
+    private String dsoAcctNumber;
+    private String accountType;
+    private String assesseeType;
+    private String existedRoleName;
+    private String roleName;
+    private String startDate;
+    private String endDate;
+    private String startTime;
+    private String endTime;
+    private String status;
+    private String date;
+    private String recommendationId;
+    private String param;
+    private String pType;
+    private String transactionType;
+    private String transactionTypeDesc;
+    private Integer resultIndx;
+    private String sequenceOfList;
+    private String reason;
+    private String objectType;
+    private String id;
+    private String eddRecord;
+    private Integer caoId;
+    private String remarks;
+    private Integer totalRow;
+    private String queryType;
+    private String queryIds;
+    private String customSessionId;
+    private String queryString;
+    private Integer crIssueId;
+    private Integer crId;
+    private String tableId;
+    private String generatedId;
+    private String executedDate;
+    private String frequency;
+    private String previousfrequency;
+    private String numOfDay;
+    private String extraParam;
+    private String ids;
+    private Boolean objStatus;
+    private String notificationData;
+    private MultipartFile file;
+    private String requestType;
+    private Integer pcrIssueId;
+    private Integer productSegmentId;
+    private String employeeType;
+    private String module;
+    private Integer argId;
+    private String downloadType;
+    private String segment;
+    private String otherParam;
+    private Integer userId;
+    private String selectedIds;
+    private String errorReportType;
+    private String amount;
+    private String amountStart;
+    private String amountEnd;
+    private String businessTrxType;
+    private String cpsTrxType;
+    private String allegedAcc;
+    private Integer transactionCount;
+    private String mode;
+    private Integer isOpen;
+    private String sessionId;
+    private Boolean countOnly;
+    private String tableType;
+
+    private String busType;
+    private String wardType;
+    private String grouping;
+    private String allegedPartyType;
+    private String reference;
+    private String oppAccountNumber;
+    private String transcationId;
+    private String cumulativeAccountLimit;
+
+}
+

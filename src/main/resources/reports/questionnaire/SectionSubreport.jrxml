@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SectionSubreport" pageWidth="560" pageHeight="842" whenNoDataType="BlankPage" columnWidth="560" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="b6692380-5ead-43d7-a9b6-6853c75946e2">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="PATH_IMG" class="java.lang.String"/>
+	<parameter name="REPORT_TYPE" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="sectionNameEnglish" class="java.lang.String"/>
+	<field name="sectionNameBangla" class="java.lang.String"/>
+	<field name="questions" class="java.util.List"/>
+	<field name="maxScore" class="java.lang.String"/>
+	<field name="sectionNo" class="java.lang.Integer"/>
+	<variable name="section_page_no" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+	</variable>
+	<variable name="group_page_no" class="java.lang.Integer" calculation="Count"/>
+	<group name="section_group" isReprintHeaderOnEachPage="true" keepTogether="true">
+		<groupHeader>
+			<band height="26">
+				<printWhenExpression><![CDATA[($V{section_group_COUNT} < $F{sectionNo})?false:true]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="2" y="1" width="556" height="25" forecolor="#FFFCFC" backcolor="#050505" uuid="b40522e5-9efb-4ca7-b538-99c18c16dff1"/>
+					<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+						<reportElement x="5" y="2" width="422" height="20" forecolor="#FFFCFC" backcolor="#050505" uuid="4d13e9ab-7301-43d4-9636-3301b9a1da89"/>
+						<textElement textAlignment="Left" verticalAlignment="Middle">
+							<font fontName="SolaimanLipi"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{sectionNameEnglish}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="427" y="2" width="126" height="20" forecolor="#FCFCFC" backcolor="#050505" uuid="2eabf269-d354-4097-8d1b-c79b26426b47"/>
+						<textElement textAlignment="Right" verticalAlignment="Middle">
+							<font fontName="SolaimanLipi"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{maxScore}]]></textFieldExpression>
+					</textField>
+				</frame>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="78" splitType="Stretch">
+			<subreport>
+				<reportElement x="2" y="32" width="552" height="40" isPrintWhenDetailOverflows="true" uuid="fed00e00-01c9-4d52-84c3-33d905febfcf"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="PATH_IMG">
+					<subreportParameterExpression><![CDATA[$P{PATH_IMG}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_TYPE">
+					<subreportParameterExpression><![CDATA[$P{REPORT_TYPE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
+            ($F{questions})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[($P{REPORT_TYPE}.equals("BANGLA")?$P{SUBREPORT_DIR}+"QuestionBanglaSubreport.jasper":
+	($P{REPORT_TYPE}.equals("BE")?$P{SUBREPORT_DIR}+"QuestionSubreport.jasper":$P{SUBREPORT_DIR}+"QuestionBanglaSubreport.jasper")
+)]]></subreportExpression>
+			</subreport>
+			<frame>
+				<reportElement mode="Opaque" x="2" y="1" width="556" height="25" forecolor="#FFFCFC" backcolor="#050505" uuid="a8868018-e8cd-46a7-8b36-707fd033050f"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="5" y="2" width="422" height="20" forecolor="#FFFCFC" backcolor="#050505" uuid="9cc20541-0ebc-4806-9d49-24d097f136ce"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="SolaimanLipi"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{sectionNameEnglish}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="427" y="2" width="126" height="20" forecolor="#FCFCFC" backcolor="#050505" uuid="a79c7d4f-ec75-4087-ae96-48bfd3fe402d"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SolaimanLipi"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{maxScore}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<line>
+				<reportElement x="2" y="31" width="553" height="1" uuid="e27de8cb-39d8-4a2c-828c-77ffa403f4ff"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>
