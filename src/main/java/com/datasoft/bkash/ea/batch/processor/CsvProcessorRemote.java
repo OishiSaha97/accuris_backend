@@ -61,7 +61,7 @@ public class CsvProcessorRemote {
                 HashMap<String, Object> resultMap = new HashMap<>();
                 Map<String,Object> procedureResult;
                 if(Objects.equals(procedureSrc, "slave")){
-                    procedureResult = jdbcFunctionDao.getProcedureResultFromSlave(procedureName, inParam);
+                    procedureResult = jdbcFunctionDao.getProcedureResult(procedureName, inParam);
                 }else{
                     procedureResult = jdbcFunctionDao.getProcedureResult(procedureName, inParam);
                 }
@@ -217,7 +217,7 @@ public class CsvProcessorRemote {
             HashMap<String, Object> resultMap = new HashMap<>();
             Map<String,Object> procedureResult;
             if(Objects.equals(procedureSrc, "slave")){
-                procedureResult = jdbcFunctionDao.getProcedureResultFromSlave(procedureName, inParam);
+                procedureResult = jdbcFunctionDao.getProcedureResult(procedureName, inParam);
             }else{
                 procedureResult = jdbcFunctionDao.getProcedureResult(procedureName, inParam);
             }

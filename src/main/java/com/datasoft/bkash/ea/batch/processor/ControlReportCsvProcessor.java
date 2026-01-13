@@ -91,7 +91,7 @@ public class ControlReportCsvProcessor {
             inParam.put("paramOffset", currentRow);
             try{
                 HashMap<String, Object> resultMap = new HashMap<>();
-                Map<String,Object> procedureResult = jdbcFunctionDao.getProcedureResultFromSlave(procedureName, inParam);
+                Map<String,Object> procedureResult = jdbcFunctionDao.getProcedureResult(procedureName, inParam);
                 String result;
 
                 if(procedureResult.containsKey("sequenceOfList")) {
