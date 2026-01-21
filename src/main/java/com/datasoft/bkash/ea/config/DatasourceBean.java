@@ -28,29 +28,6 @@ public class DatasourceBean {
     @Value("${spring.datasource.driver-class-name}")
     private String driverClassName;
 
-    @Value("${slave.datasource.url}")
-    private String slaveUrl;
-
-    @Value("${slave.datasource.username}")
-    private String slaveUsername;
-
-    @Value("${slave.datasource.password}")
-    private String slavePassword;
-
-    @Value("${slave.datasource.driver-class-name}")
-    private String slaveDriverClassName;
-
-    @Value("${aml.datasource.url}")
-    private String amlUrl;
-
-    @Value("${aml.datasource.username}")
-    private String amlUsername;
-
-    @Value("${aml.datasource.password}")
-    private String amlPassword;
-
-    @Value("${aml.datasource.driver-class-name}")
-    private String amlDriverClassName;
 
     @Primary
     @Bean(name = "dataSource")
@@ -73,29 +50,6 @@ public class DatasourceBean {
         return dataSource;
     }
 
-
-    @Bean(name = "slaveDatasource")
-    @ConfigurationProperties("slave.datasource")
-    public DataSource slaveDatasource() {
-        return DataSourceBuilder.create()
-                .url(slaveUrl)
-                .username(slaveUsername)
-                .password(slavePassword)
-                .driverClassName(slaveDriverClassName)
-                .build();
-    }
-
-    @Bean(name = "amlDatasource")
-    @ConfigurationProperties("aml.datasource")
-    public DataSource amlDatasource() {
-        return DataSourceBuilder.create()
-                .url(amlUrl)
-                .username(amlUsername)
-                .password(amlPassword)
-                .driverClassName(amlDriverClassName)
-                .build();
-    }
-
     @Primary
     @Bean(name = "jdbcTemplate")
     public JdbcTemplate jdbcTemplate(@Qualifier("masterDatasource") DataSource masterDatasource) {
@@ -105,16 +59,6 @@ public class DatasourceBean {
     @Bean(name = "template")
     public NamedParameterJdbcTemplate template(@Qualifier("masterDatasource") DataSource masterDatasource) {
         return new NamedParameterJdbcTemplate(masterDatasource);
-    }
-
-    @Bean(name = "slaveJdbcTemplate")
-    public JdbcTemplate slaveJdbcTemplate(@Qualifier("slaveDatasource") DataSource slaveDatasource) {
-        return new JdbcTemplate(slaveDatasource);
-    }
-
-    @Bean(name = "amlJdbcTemplate")
-    public JdbcTemplate amlJdbcTemplate(@Qualifier("amlDatasource") DataSource amlDatasource) {
-        return new JdbcTemplate(amlDatasource);
     }
 
 }

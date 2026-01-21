@@ -58,7 +58,7 @@ public class GatewayConfiguration implements SecurityFilterChain {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/assessment/download/", "/user/forgetPassword/", "/file/zipDownload/", "/query/zipDownload/", "/query/download/", "/v2/api-docs", "/v3/api-docs", "/configuration/", "/swagger-resources/", "/swagger-ui.html","/swagger-ui/index.html", "/webjars/", "/api-docs/", "/actuator/","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/home/get/code", "/home/mail/send", "/auth/login","/auth/testjonathon","/webjars/", "/api-docs/").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
@@ -94,7 +94,10 @@ public class GatewayConfiguration implements SecurityFilterChain {
                 contextPath + "/swagger-ui/index.html",
                 contextPath + "/webjars/",
                 contextPath + "/api-docs/",
-                contextPath + "/actuator/"
+                contextPath + "/actuator/",
+                contextPath + "/auth/login",
+                contextPath + "/auth/request-otp",
+                contextPath + "/auth/verify-otp"
         );
 
         String requestURI = request.getRequestURI();

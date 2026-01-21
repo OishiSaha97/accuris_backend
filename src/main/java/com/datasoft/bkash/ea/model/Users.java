@@ -1,12 +1,11 @@
 package com.datasoft.bkash.ea.model;
 
-import com.datasoft.bkash.ea.model.common_properties.CommonProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Users extends CommonProperties {
+public class Users {
     private Integer id;
     private String ipNumber;
     private String designation;

@@ -412,57 +412,6 @@ public class Utils {
         return whereCondition.toString();
     }
 
-    public static void createSheet(Workbook workbook, Map<String, Object> data, Map<String, Object> sequences) throws Exception {
-        for (Map.Entry<String, Object> sequence : sequences.entrySet()) {
-            Map<String, Object> dataSequence = (Map<String, Object>) sequences.get(sequence.getKey());
-            List<Map<String, Object>> dataSet = (List<Map<String, Object>>) data.get(dataSequence.get("data").toString());
-            if (dataSet != null) {
-                if (dataSet.size() > 0) {
-                    List<String> headers = Arrays.asList(org.apache.commons.lang.StringUtils.splitPreserveAllTokens((String) data.get(dataSequence.get("headers").toString()), "~"));
-
-                    List<String> keys = Arrays.asList(org.apache.commons.lang.StringUtils.splitPreserveAllTokens((String) data.get(dataSequence.get("keys").toString()), "~"));
-
-                    Sheet sheet = workbook.createSheet(dataSequence.get("sheetName").toString());
-
-                    sheet.setColumnWidth(0, 6000);
-                    sheet.setColumnWidth(1, 4000);
-
-                    Row header = sheet.createRow(0);
-
-                    CellStyle headerStyle = workbook.createCellStyle();
-                    Font font = workbook.createFont();//Create font
-                    font.setBold(true);
-                    headerStyle.setFont(font);
-
-                    Cell headerCell = header.createCell(0);
-                    for (Integer index = 0; index < headers.size(); index++) {
-                        if (index != 0) headerCell = header.createCell(index);
-                        headerCell.setCellValue(headers.get(index));
-                        headerCell.setCellStyle(headerStyle);
-                    }
-
-                    CellStyle style = workbook.createCellStyle();
-                    for (Integer index = 0; index < dataSet.size(); index++) {
-                        Row row = sheet.createRow(index + 1);
-
-                        Cell cell = row.createCell(0);
-                        for (Integer keyIndex = 0; keyIndex < keys.size(); keyIndex++) {
-                            if (keyIndex != 0) cell = row.createCell(keyIndex);
-                            cell.setCellValue(getValueFromDataSet(dataSet.get(index), keys.get(keyIndex)));
-                            cell.setCellStyle(style);
-                        }
-
-                    }
-
-                    int width = 30 * 256;
-                    for (Integer index = 0; index < 18; index++) {
-                        sheet.setColumnWidth(index, width);
-                    }
-                }
-            }
-        }
-    }
-
     public static String getValueFromDataSet(Map<String, Object> data, String param) {
         try {
             return data.get(param).toString();
