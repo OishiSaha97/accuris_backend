@@ -14,7 +14,10 @@ public class IndividualCreditRequest {
 
     @Data
     public static class DataSet {
+
+        // =========================
         // Person Info fields
+        // =========================
         private Long id;
         private String firstName;
         private String lastName;
@@ -28,7 +31,9 @@ public class IndividualCreditRequest {
         private String nationalIdPassportNo;
         private String idCopyUrl;
 
+        // =========================
         // Location fields
+        // =========================
         private String presentAddress;
         private String permanentAddress;
         private String city;
@@ -36,11 +41,15 @@ public class IndividualCreditRequest {
         private String postalCode;
         private String countryCode;
 
+        // =========================
         // Financial Info fields
+        // =========================
         private Long financialId;
         private Long individualsId;
 
+        // =========================
         // Employment Information
+        // =========================
         private Integer employerTypeId;
         private String employerName;
         private Integer employmentStatusId;
@@ -49,14 +58,18 @@ public class IndividualCreditRequest {
         private Double monthlyGrossIncome;
         private Double monthlyNetIncome;
 
+        // =========================
         // Business Information
+        // =========================
         private String businessName;
         private Integer businessTypeId;
         private String industryType;
         private Integer yearsInBusiness;
         private Double monthlyBusinessIncome;
 
+        // =========================
         // Financial and Credit Information
+        // =========================
         private Double requestedLoanAmount;
         private Double downPaymentAmount;
         private Integer loanTenureMonths;
@@ -64,30 +77,50 @@ public class IndividualCreditRequest {
         private String existingLoanDetails;
         private String creditCardDetails;
 
+        // =========================
         // Banking
+        // =========================
         private String bankName;
         private Integer activeBankAccounts;
 
+        // =========================
         // Debt Information
+        // =========================
         private Double totalOutstandingLoanAmount;
         private Double totalMonthlyEmi;
         private Double debtBurdenRatio;
 
+        // =========================
         // Credit Assessment
+        // =========================
         private Integer repaymentBehaviorId;
         private Integer cibStatusId;
 
-        // ✅ ADDED: Security/Collateral & Risk Mitigation
+        // =========================
+        // Security / Collateral
+        // =========================
         private Integer collateralAvailable;        // 1=Yes, 0=No
-        private Integer collateralTypeId;           // 1=Property, 2=FDR
+        private Integer collateralTypeId;           // e.g. 1=Property, 2=FDR
         private Double estimatedCollateralValue;
         private Integer guarantorAvailable;         // 1=Yes, 0=No
         private Integer coApplicantAvailable;       // 1=Yes, 0=No
 
-        // ✅ FIXED: Arrays for mappings - simple integer arrays, not objects
+        // =========================
+        // Document Uploads (✅ NEW)
+        // =========================
+        private String photographUrl;
+        private String salaryCertificateUrl;
+        private String bankStatementUrl;
+        private String incomeTaxReturnUrl;
+        private String cibConsentFormUrl;
+
+        // =========================
+        // Mapping Arrays
+        // =========================
         private Integer[] incomeTypeId;
         private Integer[] creditPurposeId;
     }
+
 
     @Data
     public static class IncomeType {

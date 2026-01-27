@@ -24,152 +24,55 @@ public class IndividualCreditService {
     public IndividualCreditService() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
-        // CRITICAL: Serialize dates as strings, not arrays
         this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
-    /**
-     * Unified method to process individual credit scoring
-     * Handles all operation types: 'person info', 'location', 'financial info', 'final submit'
-     */
     public IndividualCreditResponse processIndividualCredit(IndividualCreditRequest request) {
-        System.out.println("\n========================================");
-        System.out.println("STARTING PROCESS INDIVIDUAL CREDIT");
-        System.out.println("========================================");
-
         return jdbcTemplate.execute((Connection conn) -> {
+            // UPDATED: Now 7 parameters to match the new sp_save_full_individual_credit_scoring
             try (CallableStatement cs = conn.prepareCall(
-                    "{call sp_cri_individual_credit_scoring(?, ?, ?, ?, ?, ?, ?, ?)}")) {
+                    "{call sp_cri_individual_credit_scoring(?, ?, ?, ?, ?, ?, ?)}")) {
 
-                // Validate param
-                if (request.getParam() == null || request.getParam().trim().isEmpty()) {
-                    System.out.println("❌ ERROR: param is null or empty");
-                    IndividualCreditResponse errorResponse = new IndividualCreditResponse();
-                    errorResponse.setStatus("FAIL");
-                    errorResponse.setMessage("Parameter 'param' is required");
-                    return errorResponse;
-                }
-
-                // Validate userId
-                if (request.getUserId() == null) {
-                    System.out.println("❌ ERROR: userId is null");
-                    IndividualCreditResponse errorResponse = new IndividualCreditResponse();
-                    errorResponse.setStatus("FAIL");
-                    errorResponse.setMessage("User ID is required");
-                    return errorResponse;
-                }
-
-                System.out.println("REQUEST RECEIVED:");
-                System.out.println("  Param: " + request.getParam());
-                System.out.println("  pId: " + request.getPId());
-                System.out.println("  userId: " + request.getUserId());
-
-                if (request.getDataSet() != null) {
-                    System.out.println("DataSet received:");
-                    System.out.println("  firstName: " + request.getDataSet().getFirstName());
-                    System.out.println("  lastName: " + request.getDataSet().getLastName());
-                    System.out.println("  dateOfBirth: " + request.getDataSet().getDateOfBirth());
-                    System.out.println("  dateOfBirth class: " +
-                            (request.getDataSet().getDateOfBirth() != null ?
-                                    request.getDataSet().getDateOfBirth().getClass().getName() : "NULL"));
-                }
-
-                // Convert dataSet to JSON
+                // 1. Convert dataSet to JSON string
+                // The DB will extract the 'id' (pId) from inside this JSON
                 String jsonData = objectMapper.writeValueAsString(request.getDataSet());
 
-                System.out.println("\nJSON SENT TO SP:");
-                System.out.println(jsonData);
-                System.out.println();
-
                 // Set IN parameters
-                System.out.println("Setting IN parameters:");
-                if (request.getPId() != null) {
-                    System.out.println("  pId: " + request.getPId() + " (LONG)");
-                    cs.setLong(1, request.getPId());
-                } else {
-                    System.out.println("  pId: NULL");
-                    cs.setNull(1, Types.INTEGER);
-                }
-                System.out.println("  dataSet: <JSON string>");
-                cs.setString(2, jsonData);
-                System.out.println("  param: " + request.getParam());
-                cs.setString(3, request.getParam());
-                System.out.println("  userId: " + request.getUserId());
-                cs.setLong(4, request.getUserId());
+                // cs.set... (Index, Value)
+                cs.setString(1, jsonData);          // IN dataSet
+                cs.setString(2, request.getParam());  // IN param (SAVE or SUBMIT)
+                cs.setLong(3, request.getUserId());   // IN userId
 
                 // Register OUT parameters
-                System.out.println("\nRegistering OUT parameters:");
-                System.out.println("  Parameter 5: outStatus (VARCHAR)");
-                cs.registerOutParameter(5, Types.VARCHAR);  // outStatus
-                System.out.println("  Parameter 6: message (VARCHAR)");
-                cs.registerOutParameter(6, Types.VARCHAR);  // message
-                System.out.println("  Parameter 7: returnIndivId (BIGINT)");
-                cs.registerOutParameter(7, Types.BIGINT);   // returnIndivId
-                System.out.println("  Parameter 8: returnFinInfoId (BIGINT)");
-                cs.registerOutParameter(8, Types.BIGINT);   // returnFinInfoId
+                cs.registerOutParameter(4, Types.VARCHAR);  // outStatus
+                cs.registerOutParameter(5, Types.VARCHAR);  // message
+                cs.registerOutParameter(6, Types.BIGINT);   // returnIndivId
+                cs.registerOutParameter(7, Types.BIGINT);   // returnFinInfoId
 
-                // Execute the stored procedure
-                System.out.println("\n🔄 Executing stored procedure...");
+                // Execute
                 cs.execute();
-                System.out.println("✅ Stored procedure executed successfully");
 
-                // Retrieve OUT parameters
-                System.out.println("\nRetrieving OUT parameters:");
+                // Retrieve Results
+                String outStatus = cs.getString(4);
+                String message = cs.getString(5);
 
-                String outStatus = cs.getString(5);
-                System.out.println("  outStatus (param 5): '" + outStatus + "'");
+                Long returnIndivId = cs.getLong(6);
+                if (cs.wasNull()) returnIndivId = null;
 
-                String message = cs.getString(6);
-                System.out.println("  message (param 6): '" + message + "'");
+                Long returnFinInfoId = cs.getLong(7);
+                if (cs.wasNull()) returnFinInfoId = null;
 
-                Long returnIndivId = cs.getLong(7);
-                boolean indivIdWasNull = cs.wasNull();
-                System.out.println("  returnIndivId (param 7): " + returnIndivId + " | wasNull: " + indivIdWasNull);
-
-                Long returnFinInfoId = cs.getLong(8);
-                boolean finInfoIdWasNull = cs.wasNull();
-                System.out.println("  returnFinInfoId (param 8): " + returnFinInfoId + " | wasNull: " + finInfoIdWasNull);
-
-                System.out.println("\n===== SP OUT PARAMETERS SUMMARY =====");
-                System.out.println("outStatus: " + outStatus);
-                System.out.println("message: " + message);
-                System.out.println("returnIndivId: " + returnIndivId + " (wasNull: " + indivIdWasNull + ")");
-                System.out.println("returnFinInfoId: " + returnFinInfoId + " (wasNull: " + finInfoIdWasNull + ")");
-                System.out.println("=====================================");
-
-                // Handle null values for IDs
-                if (indivIdWasNull) {
-                    System.out.println("⚠️  Setting returnIndivId to NULL (wasNull=true)");
-                    returnIndivId = null;
-                }
-                if (finInfoIdWasNull) {
-                    System.out.println("⚠️  Setting returnFinInfoId to NULL (wasNull=true)");
-                    returnFinInfoId = null;
-                }
-
-                // Build response
+                // Build Response
                 IndividualCreditResponse response = new IndividualCreditResponse();
                 response.setStatus(outStatus != null ? outStatus : "FAIL");
                 response.setMessage(message != null ? message : "Operation completed");
                 response.setIndividualId(returnIndivId);
                 response.setFinancialInfoId(returnFinInfoId);
 
-                System.out.println("\n📦 RESPONSE OBJECT:");
-                System.out.println("  status: " + response.getStatus());
-                System.out.println("  message: " + response.getMessage());
-                System.out.println("  individualId: " + response.getIndividualId());
-                System.out.println("  financialInfoId: " + response.getFinancialInfoId());
-                System.out.println("========================================\n");
-
                 return response;
 
             } catch (Exception e) {
-                System.out.println("\n❌❌❌ EXCEPTION OCCURRED ❌❌❌");
-                System.out.println("Exception type: " + e.getClass().getName());
-                System.out.println("Exception message: " + e.getMessage());
                 e.printStackTrace();
-                System.out.println("========================================\n");
-
                 IndividualCreditResponse response = new IndividualCreditResponse();
                 response.setStatus("FAIL");
                 response.setMessage("Exception occurred: " + e.getMessage());

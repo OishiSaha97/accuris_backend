@@ -7,9 +7,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/individual-credit-scoring-form")
@@ -60,6 +69,57 @@ public class IndividualCreditController {
             errorResponse.setStatus("FAIL");
             errorResponse.setMessage("Server error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+
+
+
+    @Value("${app.upload.dir:/uploads}")  // Configurable in application.properties, default to /uploads
+    private String uploadDir;
+
+    @PostMapping("/upload/{individualId}/{fieldName}")
+    public ResponseEntity<Map<String, String>> uploadDocument(
+            @PathVariable Long individualId,
+            @PathVariable String fieldName,
+            @RequestParam("file") MultipartFile file) {
+
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "File is empty"));
+        }
+
+        try {
+            // Create the directory path: /uploads/individuals/{individualId}
+            Path individualDir = Paths.get(uploadDir + "/individuals/" + individualId);
+            if (!Files.exists(individualDir)) {
+                Files.createDirectories(individualDir);
+            }
+
+            // Get original file extension (e.g., .jpg, .pdf)
+            String originalFilename = file.getOriginalFilename();
+            String fileExtension = "";
+            if (originalFilename != null && originalFilename.contains(".")) {
+                fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+
+            // Construct the file name: {fieldName}.{ext}
+            String storedFileName = individualId + "_" + fieldName + fileExtension;
+
+            // Save the file
+            Path filePath = individualDir.resolve(storedFileName);
+            Files.copy(file.getInputStream(), filePath);
+
+            // Relative path to return (adjust if your server serves from a different base)
+            String relativePath = "/uploads/individuals/" + individualId + "/" + storedFileName;
+
+            Map<String, String> response = new HashMap<>();
+            response.put("path", relativePath);
+
+            return ResponseEntity.ok(response);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to upload file"));
         }
     }
 
