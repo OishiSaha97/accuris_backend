@@ -1,10 +1,6 @@
 package com.datasoft.bkash.ea.service;
 
-import com.datasoft.bkash.ea.dto.LoginRequest;
-import com.datasoft.bkash.ea.dto.LoginResponse;
-import com.datasoft.bkash.ea.dto.OtpRequestRequest;
-import com.datasoft.bkash.ea.dto.OtpVerifyRequest;
-import com.datasoft.bkash.ea.dto.UserInitData;
+import com.datasoft.bkash.ea.dto.*;
 import com.datasoft.bkash.ea.utils.SmtpEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -75,14 +71,28 @@ public class LoginService {
     /**
      * PHASE 2: Request OTP (user chooses email or phone)
      */
+    /**
+     * PHASE 2: Request OTP
+     * Aligned with sp_cri_request_signup_otp(primary_email, email_2fa, ip, user_agent, ...)
+     */
     public LoginResponse requestOtp(OtpRequestRequest request) {
         return jdbcTemplate.execute((Connection conn) -> {
-            try (CallableStatement cs = conn.prepareCall("{call sp_cri_request_otp(?, ?, ?, ?, ?, ?, ?, ?, ?)}")) {
-                cs.setString(1, request.getEmail());
-                cs.setString(2, request.getOtpMethod().toUpperCase()); // EMAIL or PHONE
-                cs.setString(3, request.getIp());
-                cs.setString(4, request.getUserAgent());
+            // Updated call string to match your 4 IN and 5 OUT parameters
+            String sql = "{call sp_cri_request_signup_otp(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 
+            try (CallableStatement cs = conn.prepareCall(sql)) {
+                // IN Parameters
+                cs.setString(1, request.getEmail());       // p_primary_email
+
+                // FIX: Use the actual 2FA email address.
+                // If the user is requesting it to their primary email, pass request.getEmail().
+                // If they have a separate 2FA email, pass that specific address.
+                cs.setString(2, request.getEmail()); // p_email_2fa
+
+                cs.setString(3, request.getIp());          // p_ip_text
+                cs.setString(4, request.getUserAgent());   // p_user_agent
+
+                // OUT Parameters
                 cs.registerOutParameter(5, Types.BIGINT);    // o_user_id
                 cs.registerOutParameter(6, Types.VARCHAR);   // o_request_status
                 cs.registerOutParameter(7, Types.VARCHAR);   // o_otp
@@ -92,34 +102,31 @@ public class LoginService {
                 cs.execute();
 
                 String status = cs.getString(6);
-
                 LoginResponse response = new LoginResponse();
                 response.setUserId(cs.getLong(5));
                 response.setStatus(status);
 
                 if ("OTP_SENT".equals(status)) {
                     String otp = cs.getString(7);
-                    String recipient = cs.getString(9);
+                    String recipient = cs.getString(9); // This is o_recipient from DB
 
                     if (cs.getTimestamp(8) != null) {
                         response.setOtpExpiresAt(cs.getTimestamp(8).toLocalDateTime());
                     }
 
-                    // Send OTP based on method
-                    if ("EMAIL".equalsIgnoreCase(request.getOtpMethod())) {
-                        sendOtpEmail(recipient, otp);
-                        response.setMessage("OTP sent to your email: " + maskEmail(recipient));
-                    } else if ("PHONE".equalsIgnoreCase(request.getOtpMethod())) {
-                        // TODO: Implement SMS sending
-                        // sendOtpSms(recipient, otp);
-                        response.setMessage("OTP sent to your phone: " + maskPhone(recipient));
-                        response.setOtp(otp); // For testing, remove in production
-                    }
+                    // Send the email using your existing SMTP service
+                    sendOtpEmail(recipient, otp);
+
+                    response.setMessage("OTP sent to: " + maskEmail(recipient));
                 } else {
+                    // Logic for NO_USER, ACCOUNT_NOT_ACTIVE, or INVALID_EMAIL_2FA
                     response.setMessage(getOtpRequestStatusMessage(status));
                 }
 
                 return response;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return createFailedResponse("ERROR", "Database error during OTP request");
             }
         });
     }
@@ -185,7 +192,7 @@ public class LoginService {
                             UserInitData data = new UserInitData();
                             data.setUserId(rs.getLong("user_id"));
                             data.setStatus(rs.getString("status"));
-                            data.setEmailVerified(rs.getBoolean("email_verified"));
+                            data.setEmailVerified(rs.getBoolean("email_2fa_verified"));
                             data.setPhoneVerified(rs.getBoolean("phone_verified"));
                             data.setFailedLoginCount(rs.getInt("failed_login_count"));
 
@@ -351,4 +358,41 @@ public class LoginService {
             default: return "OTP verification failed";
         }
     }
+
+
+    public Long getUserIdByEmail(String email) {
+        return jdbcTemplate.execute((Connection conn) -> {
+            try (CallableStatement cs =
+                         conn.prepareCall("{call get_user_id_by_email(?, ?)}")) {
+
+                cs.setString(1, email);
+                cs.registerOutParameter(2, Types.BIGINT);
+
+                cs.execute();
+
+                long userId = cs.getLong(2);
+                return cs.wasNull() ? null : userId;
+
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to get user id by email", e);
+            }
+        });
+    }
+
+    public UserName getUserNameById(Long id) {
+        String sql = "SELECT first_name, last_name FROM app_user WHERE id = ? LIMIT 1";
+
+        return jdbcTemplate.query(sql, new Object[]{id}, rs -> {
+            if (rs.next()) {
+                UserName dto = new UserName();
+                dto.setFirstName(rs.getString("first_name"));
+                dto.setLastName(rs.getString("last_name"));
+                return dto;
+            }
+            return null; // user not found
+        });
+    }
+
+//    getUserNameById
+
 }

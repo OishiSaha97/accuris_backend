@@ -1,9 +1,6 @@
 package com.datasoft.bkash.ea.controller;
 
-import com.datasoft.bkash.ea.dto.LoginRequest;
-import com.datasoft.bkash.ea.dto.LoginResponse;
-import com.datasoft.bkash.ea.dto.OtpRequestRequest;
-import com.datasoft.bkash.ea.dto.OtpVerifyRequest;
+import com.datasoft.bkash.ea.dto.*;
 import com.datasoft.bkash.ea.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 public class LoginController {
+
+
+
 
     @Autowired
     private LoginService loginService;
@@ -131,4 +131,18 @@ public class LoginController {
     public ResponseEntity<String> testEndpoint() {
         return ResponseEntity.ok("Auth controller is reachable!");
     }
+
+    @GetMapping("/userid")
+    public ResponseEntity<Long> getUserIdByEmail(@RequestParam String email) {
+        Long userId = loginService.getUserIdByEmail(email);
+        return ResponseEntity.ok(userId);
+    }
+
+    @GetMapping("/username")
+    public ResponseEntity<UserName> getUserNameById(@RequestParam Long id) {
+        UserName userName = loginService.getUserNameById(id);
+        return ResponseEntity.ok(userName);
+    }
+
+
 }

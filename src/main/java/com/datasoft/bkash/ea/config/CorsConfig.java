@@ -29,7 +29,8 @@ public class CorsConfig implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
         response.setHeader("Access-Control-Allow-Origin", corsAllowedOrigin);
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+//        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", "x-xsrf-token, x-requested-with, authorization, Content-Type, Accept");
         response.setHeader("X-Frame-Options", "deny");
