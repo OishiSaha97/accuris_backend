@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -95,31 +97,83 @@ public class IndividualCreditController {
                 Files.createDirectories(individualDir);
             }
 
-            // Get original file extension (e.g., .jpg, .pdf)
+            // ✅ CAPTURE ORIGINAL FILENAME
             String originalFilename = file.getOriginalFilename();
+
+            // Get file extension
             String fileExtension = "";
             if (originalFilename != null && originalFilename.contains(".")) {
                 fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
             }
 
-            // Construct the file name: {fieldName}.{ext}
+            // Construct the STORED file name: {individualId}_{fieldName}.{ext}
             String storedFileName = individualId + "_" + fieldName + fileExtension;
 
-            // Save the file
+            // Save the file with the stored name
             Path filePath = individualDir.resolve(storedFileName);
-            Files.copy(file.getInputStream(), filePath);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Relative path to return (adjust if your server serves from a different base)
+            // Relative path to return
             String relativePath = "/uploads/individuals/" + individualId + "/" + storedFileName;
 
             Map<String, String> response = new HashMap<>();
-            response.put("path", relativePath);
+            response.put("path", relativePath);                    // Server path: 192_idCopy.pdf
+            response.put("filename", originalFilename);            // ✅ ORIGINAL: MyDriversLicense.pdf
 
             return ResponseEntity.ok(response);
 
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(Map.of("error", "Failed to upload file"));
+        }
+    }
+
+    @GetMapping("/latest-individual/{userId}")
+    public ResponseEntity<Map<String, Object>> getLatestIndividual(@PathVariable Long userId) {
+        try {
+            Long individualId = creditService.getLatestSubmittedIndividualId(userId);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("individualId", individualId);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("individualId", null);
+            errorResponse.put("error", "Failed to fetch latest individual: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @GetMapping("/individual/{individualId}")
+    public ResponseEntity<Map<String, Object>> getIndividualById(@PathVariable Long individualId) {
+        try {
+            Map<String, Object> individualData = creditService.getIndividualById(individualId);
+
+            if (individualData != null && !individualData.isEmpty()) {
+                return ResponseEntity.ok(individualData);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to fetch individual data: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @GetMapping("/configurations")
+    public ResponseEntity<Map<String, List<Map<String, Object>>>> getAllConfigurations() {
+        try {
+            Map<String, List<Map<String, Object>>> configurations = creditService.getAllConfigurations();
+            return ResponseEntity.ok(configurations);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HashMap<>());
         }
     }
 

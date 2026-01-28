@@ -58,7 +58,7 @@ public class GatewayConfiguration implements SecurityFilterChain {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/home/get/code", "/api/individual-credit-scoring-form", "/home/mail/send", "/auth/username", "/auth/login", "/auth/signup", "auth/userid", "/auth/request-otp", "/auth/verify-otp", "/auth/testjonathon", "/auth/test-signup", "/api/individual-credit/test", "/webjars/**", "/api/individual-credit/person-info", "/api/individual-credit/location","/api-docs/**").permitAll()
+                        .requestMatchers("/home/get/code", "/api/individual-credit-scoring-form/**",  "/home/mail/send", "/auth/username", "/auth/login", "/auth/signup", "auth/userid", "/auth/request-otp", "/auth/verify-otp", "/auth/testjonathon", "/auth/test-signup", "/api/individual-credit/test", "/webjars/**", "/api/individual-credit/person-info", "/api/individual-credit/location","/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
@@ -104,7 +104,10 @@ public class GatewayConfiguration implements SecurityFilterChain {
                 contextPath + "/api/individual-credit/test",
                 contextPath + "auth/userid",
                 contextPath + "auth/username",
-                contextPath + "/api/individual-credit-scoring-form"
+                contextPath + "/api/individual-credit-scoring-form",
+                contextPath + "/api/individual-credit-scoring-form/latest-individual/",
+                contextPath + "/individual",
+                contextPath + "/api/individual-credit-scoring-form/configurations"
         );
 
         String requestURI = request.getRequestURI();

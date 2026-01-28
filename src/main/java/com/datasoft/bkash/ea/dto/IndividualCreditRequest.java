@@ -106,13 +106,21 @@ public class IndividualCreditRequest {
         private Integer coApplicantAvailable;       // 1=Yes, 0=No
 
         // =========================
-        // Document Uploads (✅ NEW)
+        // Document Uploads - PATHS
         // =========================
         private String photographUrl;
         private String salaryCertificateUrl;
         private String bankStatementUrl;
         private String incomeTaxReturnUrl;
         private String cibConsentFormUrl;
+
+        // ✅ ADD THESE - Document Uploads - FILENAMES
+        private String idCopyFilename;
+        private String photographFilename;
+        private String salaryCertificateFilename;
+        private String bankStatementFilename;
+        private String incomeTaxReturnFilename;
+        private String cibConsentFormFilename;
 
         // =========================
         // Mapping Arrays

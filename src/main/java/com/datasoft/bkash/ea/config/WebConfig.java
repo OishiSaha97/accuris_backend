@@ -25,16 +25,19 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${image.location.question-image}")
     private String questionImgDir;
 
+    @Value("${file.upload-dir:uploads}")  // ✅ ADD THIS - defaults to "uploads" if not set in properties
+    private String uploadDir;
 
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         log.info("Image files location - question: {}", questionImgDir);
-//    	log.info("Image files location - prescription: {}", prescriptionImgDir);
+        log.info("Upload files location: {}", uploadDir);  // ✅ ADD THIS LOG
+
         registry.addResourceHandler("/allfiles/**").addResourceLocations("file:" + questionImgDir);
-//        registry.addResourceHandler("/images/prescription/**").addResourceLocations("file:" + prescriptionImgDir);
-//        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
-//        registry.addResourceHandler("swagger-ui/index.html").addResourceLocations("classpath:/META-INF/resources/");
-//        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+
+        // ✅ ADD THIS - Serve uploaded files from /uploads/** endpoint
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:" + uploadDir + "/");
     }
 
     @Override
